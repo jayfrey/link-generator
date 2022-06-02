@@ -1,0 +1,77 @@
+.analytics-container {
+  background-color: #E5E5E5;
+  padding: 15px 130px;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 16px;
+  color: #19233C;
+
+  .white-background {
+    background-color: #FFF;
+  }
+
+  .padded-container {
+    padding: 20px 50px;
+    margin-bottom: 20px;
+  }
+
+  .analytics-table {
+    thead {
+      border-bottom: 1px solid #EBEDED;
+    }
+
+    th {
+      color: #7A7E87;
+      padding: 25px;
+    }
+
+    td {
+      padding: 15px 25px;
+    }
+
+    th, td {
+      text-align: left;
+    }
+  }
+
+  .analytics-metadata-section {
+    .bigger-font {
+      font-size: 24px;
+      line-height: 28px;
+    }
+  }
+
+  .analytics-data-section {
+    .bigger-font {
+      font-size: 48px;
+      line-height: 56px;
+      vertical-align: middle;
+    }
+
+    .right-margin {
+      margin-right: 10px;
+    }
+
+    .left-margin {
+      margin-left: 10px;
+    }
+
+    .right-div {
+      padding-top: 15px;
+      text-align: end;
+    }
+
+    button {
+      background-color: #fff;
+      color: #075fc2;
+      border: 1px solid #075fc2;
+      padding: 10px 38px;
+    }
+  }
+
+  a {
+    color: #0760C3;
+    text-decoration: none;
+  }
+}

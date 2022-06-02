@@ -1,0 +1,71 @@
+<html lang="en">
+        <head>
+          <meta charset="utf-8">
+        </head>
+        <body>
+      
+<p>Scenario: Make the application look good, no matter which device is used.</p>
+
+<p>Description: In the beginning most of our use were using desktop browsers, but recently we&#39;ve been seeing more and more usage of mobile browsers in our analytics, so we&#39;d like to make sure our application looks good in them. We also have a few visual bugs that had been pushed down in priority over the past few sprints that we want to finally address.</p>
+
+<p>The desktop layout inconsistencies and mobile phone portrait orientation are the most important focus for this scenario, but if we are also able to make tablet portrait look good (and not just a blown up mobile portrait) that would be even better.</p>
+
+<p>Some elements are loaded asynchronously and may be slow, so we&#39;d also optionally like to have either loading spinners or skeleton layouts for those portions.</p>
+
+<p>Here are the suggested mobile layouts by our designer. Note that we are not really going for a pixel-perfect implementation; we know that graphic design cannot always depict actual browser interactions, so we&#39;d like you to use your best judgment in case you want to make adjustments.</p>
+
+<p>Major elements to focus on for mobile layout as per provided designs: </p>
+
+<ol>
+<li>Mobile Navbar
+
+<ul>
+<li>The navigation bar doesn&#39;t fit well in the mobile view, so adding a hamburger menu is necessary. the menu will contain all of the current nabvbar items in list form.</li>
+</ul></li>
+<li>Align URL shortening form
+
+<ul>
+<li>The shorten URL form elements&#39; margin and padding needs to be adjusted.</li>
+</ul></li>
+<li>Remove Link Image
+
+<ul>
+<li>Link image is not required for mobile layout. So, it needs to be removed.</li>
+</ul></li>
+<li>Adjust the middle section (containing brand images)
+
+<ul>
+<li>The container with brand images is not showing all the brand logos on mobile layout. It needs to be fixed as per the design.</li>
+</ul></li>
+<li>Adjust the bottom section
+
+<ul>
+<li>The descriptive section for homepage(Shorten, Track and Learn) needs to be aligned properly as per the design</li>
+</ul></li>
+<li>Adjust Most Visited and Most Recent Links
+
+<ul>
+<li>Here the Box that&#39;s containing the links should be adjusted as per the design to fit the links</li>
+</ul></li>
+<li>Analytics Page
+
+<ul>
+<li>For the analytics page, we have future plans on adding the realtime graphs and the geoip maps. For now it can be replaced either with placeholders, or they can be omitted entirely.</li>
+<li>Adjust styles of elements to match with the design</li>
+</ul></li>
+</ol>
+
+<p>The home page layout on mobile is envisioned to be a single column, block-based design with the header having a hamburger menu that expands and contracts on activation:</p>
+
+<p><img src="images/mobile-not-logged-in-menu-open.png" alt="">  |  <img src="images/mobile-not-logged-in-menu-closed.png" alt=""></p>
+
+<p>The header layout changes when a user is logged in, so we&#39;d like to get that working and designed as well:</p>
+
+<p><img src="images/mobile-logged-in-avatar-menu-open.png" alt="">  |  <img src="images/mobile-logged-in-avatar-menu-closed.png" alt=""></p>
+
+<p>For the analytics page, we have future plans on adding the realtime graphs and the geoip maps. For now it can be replaced either with placeholders, or they can be omitted entirely.</p>
+
+<p>We&#39;d like to maintain parity with the desktop version regarding navigation behavior, so if a link goes to a different page or opens in a new window or tab, it should keep the same</p>
+
+<p><img src="images/mobile-analytics.png" alt=""></p>
+</body></html>

@@ -1,0 +1,43 @@
+version: '3.2'
+services:
+  db:
+    image: postgres:13.2
+    platform: linux/amd64
+    restart: always
+    environment:
+      POSTGRES_HOST_AUTH_METHOD: trust
+      POSTGRES_USER: dev
+      POSTGRES_PASSWORD: example
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U dev"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: "redis:6.2.3"
+    platform: linux/amd64
+    restart: always
+    environment:
+      - REDIS_REPLICATION_MODE=master
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  web:
+    platform: linux/amd64
+    build: .
+    depends_on:
+      - db
+      - redis
+    environment:
+      - PIDFILE=/dev/shm/server.pid
+    ports:
+      - "3000:3000"
+      - "3035:3035"
+    volumes:
+      - ./:/app
+    working_dir: /app
+    command: "bash -ec 'yarn && bundle && bin/rails db:setup; bin/webpack-dev-server & bin/rails server -b 0.0.0.0'"

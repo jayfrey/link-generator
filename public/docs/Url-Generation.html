@@ -1,0 +1,108 @@
+<html lang="en">
+        <head>
+          <meta charset="utf-8">
+        </head>
+        <body>
+      
+<p>Scenario: Improve url generation performance when under heavy load</p>
+
+<p>Description: We&#39;re in talks with a well-known Social Networking Service, and they would like to sue our link generation api platform as a white-labeled solution (think of twitter&#39;s t.co shortening service).</p>
+
+<p>We&#39;ve been fine with the current load, but we found that performance degrades significantly when dealing with the amount of traffic we&#39;re expecting once the SNS starts sending us traffic.</p>
+
+<p>To properly quantify this, we&#39;ve made a benchmark to measure the amount of time url generation requests would take.</p>
+
+<p>If you haven&#39;t prepared the db with the urls, you should do so now (it only takes about 5 minutes):</p>
+
+<p>```
+vagrant@ubuntu2004:~/app$ time RAILS<em>ENV=test bundle exec rails db:reset benchmark=true
+Dropped database &#39;talent</em>test<em>dev</em>test&#39;
+Created database &#39;talent<em>test</em>dev_test&#39;
+trying to insert 1000000 urls in the database
+generating urls 1 of 10
+generating urls |Time: 00:00:17 | ================================================================================= | Time: 00:00:17
+inserting 100000 records into the database
+generating urls 2 of 10
+generating urls |Time: 00:00:17 | ================================================================================= | Time: 00:00:17
+inserting 100000 records into the database
+generating urls 3 of 10
+generating urls |Time: 00:00:17 | ================================================================================= | Time: 00:00:17
+inserting 100000 records into the database
+generating urls 4 of 10
+generating urls |Time: 00:00:18 | ================================================================================= | Time: 00:00:18
+inserting 100000 records into the database
+generating urls 5 of 10
+generating urls |Time: 00:00:18 | ================================================================================= | Time: 00:00:18
+inserting 100000 records into the database
+generating urls 6 of 10
+generating urls |Time: 00:00:18 | ================================================================================= | Time: 00:00:18
+inserting 100000 records into the database
+generating urls 7 of 10
+generating urls |Time: 00:00:18 | ================================================================================= | Time: 00:00:18
+inserting 100000 records into the database
+generating urls 8 of 10
+generating urls |Time: 00:00:17 | ================================================================================= | Time: 00:00:17
+inserting 100000 records into the database
+generating urls 9 of 10
+generating urls |Time: 00:00:18 | ================================================================================= | Time: 00:00:18
+inserting 100000 records into the database
+generating urls 10 of 10
+generating urls |Time: 00:00:17 | ================================================================================= | Time: 00:00:17
+inserting 100000 records into the database</p>
+
+<p>real    4m36.836s
+user    5m33.089s
+sys     3m19.564s
+```</p>
+
+<p>Then, prepare the urls for siege:</p>
+
+<p><code>
+vagrant@ubuntu2004:~/app$ RAILS_ENV=benchmark bundle exec rails benchmark:url_generation:prepare
+RAILS_ENV=benchmark environment is not defined in config/webpacker.yml, falling back to production environment
+generating siege urls
+done generating urls in /tmp/url_generation.txt
+</code></p>
+
+<p>From this point on, you will just need to run the benchmark without having to seed the db nor prepare the siege urls:</p>
+
+<p>```
+vagrant@ubuntu2004:~/app$ RAILS<em>ENV=benchmark bundle exec rails benchmark:url</em>generation:run
+RAILS_ENV=benchmark environment is not defined in config/webpacker.yml, falling back to production environment
+running the benchmarking server
+done, server pid is 7316
+running benchmark for 5 minutes:
+** SIEGE 4.0.4
+** Preparing 100 concurrent users for battle.
+The server is now under siege...
+Lifting the server siege...
+Transactions:                   5406 hits
+Availability:                 100.00 %
+Elapsed time:                 299.59 secs
+Data transferred:               1.12 MB
+Response time:                  5.49 secs
+Transaction rate:              18.04 trans/sec
+Throughput:                     0.00 MB/sec
+Concurrency:                   99.06
+Successful transactions:        5406
+Failed transactions:               0
+Longest transaction:            6.41
+Shortest transaction:           0.28</p>
+
+<p>killing test server
+all done
+```</p>
+
+<p><code>
+Started POST &quot;/api/urls&quot; for 127.0.0.1 at 2021-06-16 06:20:40 +0000
+Processing by Api::UrlsController#create as */*
+  Parameters: {&quot;url&quot;=&gt;&quot;https://1265.2307774974881.example.com&quot;}
+  Url Load (0.5ms)  SELECT &quot;urls&quot;.* FROM &quot;urls&quot; WHERE &quot;urls&quot;.&quot;url&quot; = $1 LIMIT $2  [[&quot;url&quot;, &quot;https://1265.2307774974881.example.com&quot;], [&quot;LIMIT&quot;, 1]]
+  Url Exists? (0.8ms)  SELECT 1 AS one FROM &quot;urls&quot; WHERE &quot;urls&quot;.&quot;slug&quot; = $1 LIMIT $2  [[&quot;slug&quot;, &quot;hujek9cfp&quot;], [&quot;LIMIT&quot;, 1]]
+  TRANSACTION (0.7ms)  BEGIN
+  Url Create (0.8ms)  INSERT INTO &quot;urls&quot; (&quot;slug&quot;, &quot;url&quot;, &quot;created_at&quot;, &quot;updated_at&quot;) VALUES ($1, $2, $3, $4) RETURNING &quot;id&quot;  [[&quot;slug&quot;, &quot;hujek9cfp&quot;], [&quot;url&quot;, &quot;https://1265.2307774974881.example.com&quot;], [&quot;created_at&quot;, &quot;2021-06-16 06:20:41.049956&quot;], [&quot;updated_at&quot;, &quot;2021-06-16 06:20:41.049956&quot;]]
+  TRANSACTION (1.0ms)  COMMIT
+   (0.5ms)  SELECT COUNT(*) FROM &quot;statistics&quot; WHERE &quot;statistics&quot;.&quot;url_id&quot; = $1  [[&quot;url_id&quot;, 1000]]
+Completed 200 OK in 13ms (Views: 1.5ms | ActiveRecord: 4.4ms | Allocations: 1448)
+</code></p>
+</body></html>

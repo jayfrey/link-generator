@@ -1,0 +1,26 @@
+<html lang="en">
+        <head>
+          <meta charset="utf-8">
+        </head>
+        <body>
+      
+<p>Scenario: Allow logged-in users to manage links they create, and be able to generate vanity urls.</p>
+
+<p>Description: Right now both types of users (anonymous and logged-in) can generate links with random slugs. We&#39;d like to incentivize users to sign up for accounts by allowing them to list the urls they create while logged-in (so there needs to be some association between those urls and the user account) and be able to create &quot;vanity urls&quot; (i.e. custom urls that are not random strings).</p>
+
+<p>That means there will be two (not too different) layouts whether a user is logged-in or not.</p>
+
+<p>The current layout is when a user isn&#39;t logged-in and stays as is, except for the &quot;Most Recent Links&quot; and &quot;Most Visited Links&quot; section section where it will only show &quot;public&quot; links (links that were not generated while a user is logged in).</p>
+
+<p>When a user logs in however, creating a new shortened link will associate that link with the user.</p>
+
+<p>The most recent and most visited section on the home page will then be replaced by all the links that a user has generated while logged in, and they will be able delete a shortened link from there.</p>
+
+<p>These &quot;private&quot; links are also hidden from the top links section when viewing the homepage as a non-logged-in user.</p>
+
+<p><img src="images/private-links.png" alt=""></p>
+
+<p>Deleting a link does not actually remove the shortened link from the database; rather it just disassociates the link from the user&#39;s records, effectively making the link &quot;public&quot; again and enabling it to participate in the topi links leaderboard.</p>
+
+<p>Optionally, a normal link can be turned into a vanity link by first generating a link as usual, then allowing the user to edit the slug. Ideally a user should only be able to convert a normal link to a vanity link three times in a month, but this is optional. We don&#39;t have a set design for the vanity url, so we&#39;d like you to try and make a prototype which we can iterate on.</p>
+</body></html>

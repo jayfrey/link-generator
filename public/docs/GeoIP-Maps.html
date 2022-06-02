@@ -1,0 +1,22 @@
+<html lang="en">
+        <head>
+          <meta charset="utf-8">
+        </head>
+        <body>
+      
+<p>Scenario: Generate a map representing the countries from where visits originate from</p>
+
+<p>Description: We track the ip address of every visit to a shortened url, and we&#39;d like to generate a heatmap of sorts using that information.</p>
+
+<p>We are able to map an ip address to its corresponding country, and we want to be able to generate a map with each country shaded according to the number of visits it has received from that country.</p>
+
+<p>For example, if there are 10 visits from Malaysia and 100 visits from Canada, the map will show the Malaysian region in a lighter shade than that of Canada.</p>
+
+<p>The map does not have to be updated in realtime. How frequently the map is updated is up to you, but let us know the granularity; 30 minutes is probably the maximum we can go for and any longer than that would likely be too outdated for our users.</p>
+
+<p>While we only have countries mapped to the ip address, it would also be nice to be able to derive the city associated with that ip address (although we do not need this to be super accurate). That way we can drop a map pin on those cities from where the visits originate; this is optional though.</p>
+
+<p>If using a third party service that needs an account and an API key, we&#39;ll need to either use your API key or provide instructions (preferably as an update to <code>README.md</code>) on how to obtain access so that future team members can continue development.</p>
+
+<p><img src="images/geoip-map.png" alt=""></p>
+</body></html>

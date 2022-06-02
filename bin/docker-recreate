@@ -1,0 +1,29 @@
+#!/bin/bash
+
+# This script automates destroying and rebuilding all docker containers
+#
+# The main goal is to help run tests against a fresh environment both on
+# local and on CI
+
+set -xeuo pipefail
+
+docker-compose ps
+
+echo -e "\n\n\n"
+
+docker-compose kill
+docker-compose rm -f
+
+docker-compose up -d db redis
+
+docker-compose build web
+
+docker-compose run --rm web yarn
+docker-compose run --rm web bundle
+docker-compose run --rm web bin/rails db:setup
+
+docker-compose up -d web
+
+docker-compose ps
+
+echo "Done."

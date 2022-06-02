@@ -1,0 +1,81 @@
+.header {
+  margin-top: 23px;
+  font-weight: 300;
+  font-size: 24px;
+  font-style: normal;
+  border-bottom: 1px solid #EBEDED;
+
+  b {
+    font-weight: 700;
+  }
+
+  button, a.button {
+    font-size: 14px;
+    line-height: 16px;
+    font-weight: 500;
+    padding: 10px 27px;
+    border: 1px solid #0760C3;
+    margin-right: 20px;
+    text-decoration: none;
+  }
+
+  .logo {
+    padding: 15px 0px 0px 220px;
+    color: #000;
+    text-decoration: none;
+    margin-bottom: 15px;
+  }
+
+  .login-signup, .avatar-container {
+    text-align: end;
+    padding: 14px 45px 0px 0px;
+  }
+
+  .login, .logout {
+    background-color: #fff;
+    color: #0760C3;
+  }
+
+  .logout {
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 19px;
+  }
+
+  .name {
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 16px;
+  }
+
+  .email {
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 16px;
+  }
+
+  .signup {
+    background: #0760C3;
+    color: #fff;
+  }
+
+  .dropdown {
+    position: relative;
+    display: inline-block;
+    text-align: start;
+  }
+
+  .dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #fff;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    padding: 12px 16px;
+    z-index: 1;
+    right: 0;
+  }
+
+  .dropdown:hover .dropdown-content {
+    display: block;
+  }
+}

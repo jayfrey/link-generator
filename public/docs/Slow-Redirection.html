@@ -1,0 +1,107 @@
+<html lang="en">
+        <head>
+          <meta charset="utf-8">
+        </head>
+        <body>
+      
+<p>Scenario: Improve url redirection performance when under heavy load</p>
+
+<p>Description: We didn&#39;t realize it during our pre-launch testing, but when our Social Networking Services (SNS) team posted an article on linkedin, we got more traffic than ever before and found out that redirection is slow for the most visited urls.</p>
+
+<p>We&#39;ve prepared a benchmark to test this out. First reset and seed the test database with urls and slugs:</p>
+
+<p>```
+vagrant@ubuntu2004:~/app$ time RAILS<em>ENV=test bundle exec rails db:reset benchmark=true
+Dropped database &#39;talent</em>test<em>dev</em>test&#39;
+Created database &#39;talent<em>test</em>dev_test&#39;
+trying to insert 1000000 urls in the database
+generating urls 1 of 10
+generating urls |Time: 00:00:17 | ================================================================================= | Time: 00:00:17
+inserting 100000 records into the database
+generating urls 2 of 10
+generating urls |Time: 00:00:17 | ================================================================================= | Time: 00:00:17
+inserting 100000 records into the database
+generating urls 3 of 10
+generating urls |Time: 00:00:17 | ================================================================================= | Time: 00:00:17
+inserting 100000 records into the database
+generating urls 4 of 10
+generating urls |Time: 00:00:18 | ================================================================================= | Time: 00:00:18
+inserting 100000 records into the database
+generating urls 5 of 10
+generating urls |Time: 00:00:18 | ================================================================================= | Time: 00:00:18
+inserting 100000 records into the database
+generating urls 6 of 10
+generating urls |Time: 00:00:18 | ================================================================================= | Time: 00:00:18
+inserting 100000 records into the database
+generating urls 7 of 10
+generating urls |Time: 00:00:18 | ================================================================================= | Time: 00:00:18
+inserting 100000 records into the database
+generating urls 8 of 10
+generating urls |Time: 00:00:17 | ================================================================================= | Time: 00:00:17
+inserting 100000 records into the database
+generating urls 9 of 10
+generating urls |Time: 00:00:18 | ================================================================================= | Time: 00:00:18
+inserting 100000 records into the database
+generating urls 10 of 10
+generating urls |Time: 00:00:17 | ================================================================================= | Time: 00:00:17
+inserting 100000 records into the database</p>
+
+<p>real    4m36.836s
+user    5m33.089s
+sys     3m19.564s
+```</p>
+
+<p>Then prepare the siege urls:</p>
+
+<p><code>
+vagrant@ubuntu2004:~/app$ RAILS_ENV=benchmark bundle exec rails benchmark:slow_redirection:prepare
+RAILS_ENV=benchmark environment is not defined in config/webpacker.yml, falling back to production environment
+generating siege urls
+done generating urls in /tmp/slow_redirection.txt
+</code></p>
+
+<p>You can now run the benchmark itself:</p>
+
+<p>```
+vagrant@ubuntu2004:~/app$ RAILS<em>ENV=benchmark bundle exec rails benchmark:slow</em>redirection:run
+RAILS_ENV=benchmark environment is not defined in config/webpacker.yml, falling back to production environment
+running the benchmarking server
+done, server pid is 38264
+running benchmark for 5 minutes:
+** SIEGE 4.0.4
+** Preparing 100 concurrent users for battle.
+The server is now under siege...
+Lifting the server siege...
+Transactions:                   4686 hits
+Availability:                 100.00 %
+Elapsed time:                 299.23 secs
+Data transferred:               0.43 MB
+Response time:                  6.31 secs
+Transaction rate:              15.66 trans/sec
+Throughput:                     0.00 MB/sec
+Concurrency:                   98.86
+Successful transactions:        4686
+Failed transactions:               0
+Longest transaction:            7.33
+Shortest transaction:           0.46</p>
+
+<p>killing test server
+all done
+```</p>
+
+<p><code>
+Started GET &quot;/o/rrsoft&quot; for 127.0.0.1 at 2021-06-17 08:25:56 +0000
+Processing by LinksController#visit as */*
+  Parameters: {&quot;slug&quot;=&gt;&quot;rrsoft&quot;}
+  Url Load (1.5ms)  SELECT &quot;urls&quot;.* FROM &quot;urls&quot; WHERE &quot;urls&quot;.&quot;slug&quot; = $1 LIMIT $2  [[&quot;slug&quot;, &quot;rrsoft&quot;], [&quot;LIMIT&quot;, 1]]
+  TRANSACTION (0.5ms)  BEGIN
+  Statistic Create (1.1ms)  INSERT INTO &quot;statistics&quot; (&quot;user_agent&quot;, &quot;ip&quot;, &quot;country&quot;, &quot;created_at&quot;, &quot;updated_at&quot;, &quot;url_id&quot;) VALUES ($1, $2, $3, $4, $5, $6) RETURNING &quot;id&quot;  [[&quot;user_agent&quot;, &quot;Mozilla/5.0 (pc-x86_64-linux-gnu) Siege/4.0.4&quot;], [&quot;ip&quot;, &quot;127.0.0.1&quot;], [&quot;country&quot;, &quot;unknown&quot;], [&quot;created_at&quot;, &quot;2021-06-17 08:25:56.562447&quot;], [&quot;updated_at&quot;, &quot;2021-06-17 08:25:56.562447&quot;], [&quot;url_id&quot;, 3001]]
+  TRANSACTION (1.3ms)  COMMIT
+   (1.3ms)  SELECT COUNT(*) FROM &quot;statistics&quot; WHERE &quot;statistics&quot;.&quot;url_id&quot; = $1  [[&quot;url_id&quot;, 3001]]
+[ActionCable] Broadcasting to url_visit:rrsoft: &quot;{\&quot;id\&quot;:243718,\&quot;user_agent\&quot;:\&quot;Mozilla/5.0 (pc-x86_64-linux-gnu) Siege/4.0.4\&quot;,\&quot;referrer\&quot;:null,\&quot;ip\&quot;:\&quot;127.0.0.1\&quot;,\&quot;country\&quot;:\&quot;unknown\&quot;,\&quot;created_at\&quot;:\&quot;2021-06-17T08:25:56.562Z\&quot;,\&quot;count\&quot;:100}&quot;
+Redirected to https://rrsoft.co
+Completed 302 Found in 80ms (ActiveRecord: 5.7ms | Allocations: 2050)
+</code></p>
+
+<p>We&#39;d like to improve the transaction rate by at least 20% of what it currently is. We know that your local development machine might be faster or slower than our test machines, so we&#39;re only looking for relative improvements.</p>
+</body></html>

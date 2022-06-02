@@ -1,0 +1,230 @@
+<html lang="en">
+        <head>
+          <meta charset="utf-8">
+        </head>
+        <body>
+      
+<h2>How to run Vagrant</h2>
+
+<p>Virtualbox is a prerequisite for vagrant; you can get it from the <a href="https://www.virtualbox.org/wiki/Downloads">Virtualbox download page</a>.</p>
+
+<p>You will then need to download and install vagrant for your operating system, then after cloning the repository you can start vagrant via <code>vagrant up</code> and it will automatically create and provision the development virtual machine for you.</p>
+
+<p>It takes a couple of minutes for the initial provisioning, but subsequent invocations take only a few seconds (the time it takes for the virtual machine to boot up).</p>
+
+<p>Here is an example log:</p>
+
+<p><code>
+user@machine$ vagrant up
+Bringing machine &#39;default&#39; up with &#39;virtualbox&#39; provider...
+==&gt; default: Importing base box &#39;generic/ubuntu2004&#39;...
+==&gt; default: Matching MAC address for NAT networking...
+==&gt; default: Checking if box &#39;generic/ubuntu2004&#39; version &#39;3.2.20&#39; is up to date...
+==&gt; default: Setting the name of the VM: talent-test-dev_default_1622436723323_758
+==&gt; default: Clearing any previously set network interfaces...
+==&gt; default: Preparing network interfaces based on configuration...
+    default: Adapter 1: nat
+==&gt; default: Forwarding ports...
+    default: 22 (guest) =&gt; 2222 (host) (adapter 1)
+==&gt; default: Running &#39;pre-boot&#39; VM customizations...
+==&gt; default: Booting VM...
+==&gt; default: Waiting for machine to boot. This may take a few minutes...
+    default: SSH address: 127.0.0.1:2222
+    default: SSH username: vagrant
+    default: SSH auth method: private key
+    default:
+    default: Vagrant insecure key detected. Vagrant will automatically replace
+    default: this with a newly generated keypair for better security.
+    default:
+    default: Inserting generated public key within guest...
+    default: Removing insecure key from the guest if it&#39;s present...
+    default: Key inserted! Disconnecting and reconnecting using new SSH key...
+==&gt; default: Machine booted and ready!
+==&gt; default: Checking for guest additions in VM...
+==&gt; default: Running provisioner: shell...
+    default: Running: /tmp/vagrant-shell20210531-71681-1idx6nj
+    default: Hit:1 http://us.archive.ubuntu.com/ubuntu focal InRelease
+    default: Get:2 http://us.archive.ubuntu.com/ubuntu focal-updates InRelease [114 kB]
+    default: Get:3 http://us.archive.ubuntu.com/ubuntu focal-backports InRelease [101 kB]
+    default: Get:4 http://us.archive.ubuntu.com/ubuntu focal-updates/main amd64 Packages [991 kB]
+    default: Get:5 http://us.archive.ubuntu.com/ubuntu focal-updates/main i386 Packages [482 kB]
+.
+.
+.
+    default: Using web-console 4.1.0
+    default: Using webpacker 5.3.0
+    default: Bundle complete! 29 Gemfile dependencies, 118 gems now installed.
+    default: Bundled gems are installed into `./vendor/bundle`
+    default: Bundle complete! 29 Gemfile dependencies, 118 gems now installed.
+    default: Bundled gems are installed into `./vendor/bundle`
+    default: Database &#39;talent_test_dev_development&#39; already exists
+    default: Database &#39;talent_test_dev_test&#39; already exists
+    default: generating urls: |
+ .
+ .
+ .
+    default: Created symlink /etc/systemd/system/multi-user.target.wants/rails-server.service → /etc/systemd/system/rails-server.service.
+</code></p>
+
+<h2>How to access the Vagrant Virtual Machine for development</h2>
+
+<p>After starting the development vm via <code>vagrant up</code> it will automatically do the following:</p>
+
+<ul>
+<li>mount the current folder to the vm&#39;s <code>/home/vagrant/app</code> folder</li>
+<li>install ruby and nodejs</li>
+<li>install gems and node packages</li>
+<li>create the development and test db</li>
+<li>generate seed urls and statistics</li>
+<li>start a development server</li>
+</ul>
+
+<p>That means that any changes you make to files will automatically be reflected in the development machine, and since rails is running in development mode it will automatically detect file changes and adapt accordingly.</p>
+
+<h2>How to view the logs (development, benchmark, etc)</h2>
+
+<p>Since the server is started inside the development machine, you will need to first ssh into that machine in order to view the logs:</p>
+
+<p><code>vagrant ssh</code></p>
+
+<p><code>tail -f app/log/development.log</code></p>
+
+<p>Example output:</p>
+
+<p>``` sql
+vagrant@ubuntu2004:~$ tail -f app/log/development.log
+  TRANSACTION (1.0ms)  COMMIT
+  ActiveRecord::InternalMetadata Load (0.4ms)  SELECT &quot;ar<em>internal</em>metadata&quot;.* FROM &quot;ar<em>internal</em>metadata&quot; WHERE &quot;ar<em>internal</em>metadata&quot;.&quot;key&quot; = $1 LIMIT $2  [[&quot;key&quot;, &quot;environment&quot;], [&quot;LIMIT&quot;, 1]]
+  TRANSACTION (0.2ms)  BEGIN
+  ActiveRecord::InternalMetadata Update (0.4ms)  UPDATE &quot;ar<em>internal</em>metadata&quot; SET &quot;value&quot; = $1, &quot;updated<em>at&quot; = $2 WHERE &quot;ar</em>internal<em>metadata&quot;.&quot;key&quot; = $3  [[&quot;value&quot;, &quot;test&quot;], [&quot;updated</em>at&quot;, &quot;2021-06-02 08:40:55.583963&quot;], [&quot;key&quot;, &quot;environment&quot;]]
+  TRANSACTION (1.1ms)  COMMIT
+  ActiveRecord::InternalMetadata Load (0.3ms)  SELECT &quot;ar<em>internal</em>metadata&quot;.* FROM &quot;ar<em>internal</em>metadata&quot; WHERE &quot;ar<em>internal</em>metadata&quot;.&quot;key&quot; = $1 LIMIT $2  [[&quot;key&quot;, &quot;schema<em>sha1&quot;], [&quot;LIMIT&quot;, 1]]
+  TRANSACTION (0.2ms)  BEGIN
+  ActiveRecord::InternalMetadata Create (0.3ms)  INSERT INTO &quot;ar</em>internal<em>metadata&quot; (&quot;key&quot;, &quot;value&quot;, &quot;created</em>at&quot;, &quot;updated<em>at&quot;) VALUES ($1, $2, $3, $4) RETURNING &quot;key&quot;  [[&quot;key&quot;, &quot;schema</em>sha1&quot;], [&quot;value&quot;, &quot;32bc94c87bcbffd4719fcac41169c7eff478fad8&quot;], [&quot;created<em>at&quot;, &quot;2021-06-02 08:40:55.591838&quot;], [&quot;updated</em>at&quot;, &quot;2021-06-02 08:40:55.591838&quot;]]
+  TRANSACTION (1.0ms)  COMMIT
+   (0.5ms)  SELECT &quot;schema<em>migrations&quot;.&quot;version&quot; FROM &quot;schema</em>migrations&quot; ORDER BY &quot;schema_migrations&quot;.&quot;version&quot; ASC
+Started GET &quot;/&quot; for 10.0.2.2 at 2021-06-02 08:51:45 +0000
+Cannot render console from 10.0.2.2! Allowed networks: 127.0.0.0/127.255.255.255, ::1
+Processing by HomepageController#index as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering homepage/index.html.erb within layouts/application
+  Rendered homepage/index.html.erb within layouts/application (Duration: 0.1ms | Allocations: 36)
+[Webpacker] Compiling...
+[Webpacker] Compiled all packs in /home/vagrant/app/public/packs
+[Webpacker] Though the &quot;loose&quot; option was set to &quot;false&quot; in your @babel/preset-env config, it will not be used for @babel/plugin-proposal-private-methods since the &quot;loose&quot; mode option was set to &quot;true&quot; for @babel/plugin-proposal-class-properties.
+The &quot;loose&quot; option must be the same for @babel/plugin-proposal-class-properties, @babel/plugin-proposal-private-methods and @babel/plugin-proposal-private-property-in-object (when they are enabled): you can silence this warning by explicitly adding
+        [&quot;@babel/plugin-proposal-private-methods&quot;, { &quot;loose&quot;: true }]
+to the &quot;plugins&quot; section of your Babel config.</p>
+
+<p>[Webpacker] Hash: 51ca4947d10153179be7
+Version: webpack 4.46.0
+Time: 5379ms
+Built at: 06/02/2021 8:51:57 AM
+                                     Asset      Size       Chunks                         Chunk Names
+          js/Index-ddb1aaa97ae69e2798aa.js  2.57 MiB        Index  [emitted] [immutable]  Index
+      js/Index-ddb1aaa97ae69e2798aa.js.map   2.8 MiB        Index  [emitted] [dev]        Index
+.
+.
+.
+Completed 200 OK in 119ms (Views: 21.3ms | ActiveRecord: 31.0ms | Allocations: 80342)
+```</p>
+
+<h2>How to run a rails console</h2>
+
+<p>Similar to viewing the logs, you can start a rails console via ssh into the development machine. Note that the actual rails application is in the <code>/home/vagrant/app</code> folder, so you&#39;ll need to first change into the <code>app</code> folder before <code>rails c</code>:</p>
+
+<p><code>
+vagrant@ubuntu2004:~/app$ bundle exec rails c
+Running via Spring preloader in process 35518
+Loading development environment (Rails 6.1.3.2)
+irb: warn: can&#39;t alias context from irb_context.
+3.0.0 :001 &gt;
+</code></p>
+
+<h2>How to stop or force restart the built-in development server</h2>
+
+<p>The vagrant machine automatically runs an instance of the development server on boot; this means you don&#39;t even need to run a rails server manually.</p>
+
+<p>However sometimes you do wish to run a rails server manually (for example, if you need interactivity like when using byebug). In that case, you&#39;ll need to stop the background service.</p>
+
+<p>As usual, ssh into the vagrant machine:</p>
+
+<p><code>vagrant ssh</code></p>
+
+<p>And then use <code>systemctl</code> to stop the rails server:</p>
+
+<p><code>sudo systemctl stop rails-server</code></p>
+
+<p>Sometimes you&#39;ll want to force-restart the background rails server (e.g. you installed some new gems, or changed some initializers). You can restart the service via <code>systemctl</code>:</p>
+
+<p><code>sudo systemctl restart rails-server</code></p>
+
+<p>Rarely you&#39;ll sometimes need to reboot the vagrant machine (you might be trying out some fancy new gem that somehow corrupted memory). All you need to do is to reload the vagrant machine:</p>
+
+<p><code>vagrant reload</code></p>
+
+<h2>How to interact with the API</h2>
+
+<p>We are using oauth as our authentication mechanism. For development, we are using the oauth developer strategy, which is found at <code>/auth/developer</code>.</p>
+
+<p>Start by visiting the <code>/auth/developer</code> url. After filling in the name and email fields, you will be redirected to the previous url with a query parameter called <code>session_id</code> like so:</p>
+
+<p><code>
+http://localhost:3000/?session_id=2592ca4d984b57f0094bfb99b9b5ec0c
+</code></p>
+
+<p>Most of the apis are available without having to be authenticated; however if you want to generate an authenticated request, attach the query parameter <code>session_id</code> to the api url like so:</p>
+
+<p><code>
+http://localhost:3000/api/urls/new?session_id=2592ca4d984b57f0094bfb99b9b5ec0c
+</code></p>
+
+<p>In the rails app, you will now have the <code>current_user</code> helper method returning the current logged in user.</p>
+
+<p>You can also access details of the current user by sending an authenticated request to <code>/api/users/whoami</code></p>
+
+<p>This whole workflow is also captured in the system spec <code>spec/system/login_spec.rb</code>:</p>
+
+<p>``` ruby
+it &quot;logs in and uses the returned token to retrieve session info&quot; do
+  visit &quot;/auth/developer&quot;</p>
+
+<p>fill<em>in &quot;Name&quot;, with: &quot;rspec&quot;
+  fill</em>in &quot;Email&quot;, with: &quot;<a href="mailto:rspec@example.com">rspec@example.com</a>&quot;
+  click_button &quot;Sign In&quot;</p>
+
+<p>expect(current<em>url).to include(&quot;session</em>id&quot;)</p>
+
+<p>session<em>id = URI(current</em>url).query.split(&quot;=&quot;)[1]
+  visit &quot;/api/users/whoami?session<em>id=#{session</em>id}&quot;</p>
+
+<p>expect(page).to have_text(&quot;<a href="mailto:rspec@example.com">rspec@example.com</a>&quot;)
+end
+```</p>
+
+<h2>How to run the specs</h2>
+
+<p>We use rspec as our test harness. These are located in the <code>/spec</code> folder.</p>
+
+<p>You can run the test if you <code>vagrant ssh</code> to the development machine, change into the <code>app</code> folder, and run <code>bundle exec rspec</code>:</p>
+
+<p><code>bash
+$ vagrant ssh
+Last login: Wed Oct 21 16:29:00 2015 from 10.0.2.2
+</code>
+``` bash
+vagrant@ubuntu2004:~$ cd app/
+vagrant@ubuntu2004:~/app$ bundle exec rspec
+.....D, [2021-06-02T18:54:12.256405 #38953] DEBUG -- omniauth: (developer) Request phase initiated.
+D, [2021-06-02T18:54:12.384377 #38953] DEBUG -- omniauth: (developer) Callback phase initiated.
+..D, [2021-06-02T18:54:28.693408 #38953] DEBUG -- omniauth: (developer) Request phase initiated.
+D, [2021-06-02T18:54:28.735539 #38953] DEBUG -- omniauth: (developer) Callback phase initiated.
+.D, [2021-06-02T18:54:28.990377 #38953] DEBUG -- omniauth: (developer) Request phase initiated.
+D, [2021-06-02T18:54:29.089113 #38953] DEBUG -- omniauth: (developer) Callback phase initiated.
+.</p>
+
+<p>Finished in 25.18 seconds (files took 9.81 seconds to load)
+9 examples, 0 failures</p>
+
+<p>```</p>
+</body></html>

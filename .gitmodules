@@ -1,0 +1,4 @@
+[submodule "wiki"]
+	path = wiki
+	url = git@gitlab.com:rapidriversoftware/talent-test-dev.wiki.git
+	branch = master

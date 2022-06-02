@@ -1,0 +1,18 @@
+<html lang="en">
+        <head>
+          <meta charset="utf-8">
+        </head>
+        <body>
+      
+<p>Scenario: Infinite scrolling on the url analytics page</p>
+
+<p>Description: Each url has its corresponding analytics page that can be visited by going to <code>/a/url-slug</code>. This analytics page contains, among other things, the list of all visits and their related metadata.</p>
+
+<p>This list of visits can be very long, especially for popular URLs that can have thousands of visits per month. Right now the analytics page displays all the records no matter how many there are; it&#39;s quite fine for URLs that only have a few hundred visits but it can be quite bandwidth intensive for URLs that have thousands of rows of data.</p>
+
+<p>We&#39;d like to have something like an infinite-scroll type of navigation, where the analytics page will initially display the first 20 visit rows, then when the user reaches the bottom of the page, load the next 20 etc. until all records have been loaded.</p>
+
+<p>Alternatively there may also be a button that the user can click on to load more records, but this is more for graceful degradation in case the infinite scroll fails to trigger for some reason.</p>
+
+<p>Optionally, if the user scrolls to the middle of the list and navigates away from the page, when they come back to the same page the same section of the list will be presented, and infinite scroll works both &quot;upwards&quot; and &quot;downwards&quot; the page. Downwards scrolling would still be triggered when reaching the bottom of the viewport, while upwards scrolling would trigger when scrolling up with the mouse-wheel while the mouse cursor is inside the statistics box.</p>
+</body></html>

@@ -1,0 +1,7 @@
+current_user.to_json: <%= current_user.to_json %><br />
+session.to_h: <%= session.to_h %><br />
+session.id: <%= session.id %><br />
+<%= form_with url: api_urls_path do |form| %>
+  <%= form.text_field :url %>
+  <%= form.submit %>
+<% end %>
