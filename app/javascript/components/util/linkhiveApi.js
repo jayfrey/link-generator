@@ -1,5 +1,6 @@
 import axios from 'axios';
 import qs from 'qs';
+import getSessId from './getSessId';
 
 const routes = {
   whoami: (sessionId) => `/api/users/whoami?session_id=${sessionId}`,
@@ -8,6 +9,8 @@ const routes = {
   logout: () => '/auth/logout',
   mostRecent: () => '/api/top/recent',
   mostVisited: () => '/api/top/visited',
+  userLinks: (sessionId) => `/api/users/links?session_id=${sessionId}`,
+  unbindLink: (sessionId, urlId) => `/api/urls/${urlId}/unbind?session_id=${sessionId}`,
 };
 
 const linkmanApi = {
@@ -19,8 +22,8 @@ const linkmanApi = {
     return axios.get(routes.showUrl(slug));
   },
 
-  shortenLink(url) {
-    return axios.post(routes.createUrl(), qs.stringify(url));
+  shortenLink(url, customUrl = '', userId = null) {
+    return axios.post(routes.createUrl(), qs.stringify(url), customUrl, userId);
   },
 
   logout() {
@@ -33,6 +36,14 @@ const linkmanApi = {
 
   mostVisited() {
     return axios.get(routes.mostVisited());
+  },
+
+  userLinks() {
+    return axios.get(routes.userLinks(getSessId()));
+  },
+
+  unbindLink(urlId) {
+    return axios.patch(routes.unbindLink(getSessId(), urlId));
   },
 };
 
