@@ -5,10 +5,13 @@ Rails.application.routes.draw do
   get "api/urls/new", to: "api/urls#new", as: "new_api_url" unless Rails.env.production?
 
   namespace :api do
-    resources :urls, except: [:new]
+    resources :urls, except: [:new] do
+      patch 'unbind', to: 'urls#unbind'
+    end
 
     namespace :users do
       get 'whoami'
+      get 'links'
     end
 
     namespace :top do
