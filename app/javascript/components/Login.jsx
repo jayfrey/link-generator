@@ -2,18 +2,14 @@ import React, { useState, useEffect } from 'react';
 import Cookies from 'js-cookie';
 import api from './util/linkhiveApi';
 import avatarLogo from '../../assets/images/avatar.svg';
+import getSessId from './util/getSessId';
 
 const Login = () => {
   const [user, setUser] = useState({});
   const [sessionId, setSessionId] = useState(null);
 
   useEffect(() => {
-    let sessId = new URLSearchParams(window.location.search).getAll('session_id').pop();
-
-    if (sessId == null) {
-      // maybe the session id is in the cookie?
-      sessId = Cookies.get('linkhive_session_id');
-    }
+    const sessId = getSessId();
 
     if (sessId != null) {
       Cookies.set('linkhive_session_id', sessId);
