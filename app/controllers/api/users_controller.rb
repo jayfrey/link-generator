@@ -9,5 +9,13 @@ module Api
         render json: { success: false }, status: :unauthorized
       end
     end
+
+    def links
+      if current_user
+        render json: { success: true, data: { urls: current_user.urls } }
+      else
+        render json: { success: false }, status: :unauthorized
+      end
+    end
   end
 end
