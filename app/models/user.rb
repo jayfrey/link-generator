@@ -1,5 +1,6 @@
 class User < ApplicationRecord
   has_many :authentications
+  has_many :urls
 
   enum role: [:member, :moderator, :admin]
 

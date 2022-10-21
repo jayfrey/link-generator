@@ -5,11 +5,13 @@ class Url < ApplicationRecord
   MINLEN = 8
 
   has_many :statistics, dependent: :destroy_async
+  belongs_to :users, class_name: 'User', foreign_key: :user_id, optional: true
 
   validates :url, url: true
 
   def as_json(options = {})
     only = [
+      :id,
       :created_at,
       :slug,
       :url,
@@ -19,6 +21,7 @@ class Url < ApplicationRecord
       :shortened_link,
       :analytics_link,
       :visit_count,
+      :user_id,
     ] + (options[:methods] || [])
 
     new_options = options.merge(
@@ -40,7 +43,7 @@ class Url < ApplicationRecord
   end
 
   def self.top_recent(limit = 10)
-    all.sort_by(&:created_at).reverse.take(limit)
+    all.where(user_id: nil).sort_by(&:created_at).reverse.take(limit)
   end
 
   def self.generate_random_string() = rand(36**(rand(MINLEN..MAXLEN))).to_s(36)
