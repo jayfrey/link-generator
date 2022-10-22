@@ -10,6 +10,7 @@ const Analytics = () => {
   const [urlData, setUrlData] = useState({});
   const [urlStats, setUrlStats] = useState([]);
   const [urlVisitCount, setUrlVisitCount] = useState(0);
+  const [graphInterval, setGraphInterval] = useState(5000);
 
   useEffect(() => {
     const slug = (window.location.pathname).substring(3);
@@ -28,6 +29,17 @@ const Analytics = () => {
         setUrlVisitCount(stats.count);
       },
     });
+
+    const urlVisitIntervalChannel = consumer.subscriptions.create({ channel: 'UrlVisitIntervalChannel', room: `url_visit_interval:${slug}` }, {
+      received(data) {
+        console.log(data.count);
+      },
+    });
+    const interval = setInterval(() => {
+      urlVisitIntervalChannel.send({ slug, graph_interval: graphInterval });
+    }, graphInterval);
+
+    return () => clearInterval(interval);
   }, []);
 
   return (
