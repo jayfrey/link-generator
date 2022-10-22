@@ -39,7 +39,7 @@ class Url < ApplicationRecord
   def visit_count() = statistics.count
 
   def self.top_visited(limit = 10)
-    Url.where(user_id: nil).joins(:statistics).group('urls.id').order('COUNT(statistics.id) DESC').take(limit)
+    Url.where(user_id: nil).joins(:statistics).group(:id).order('COUNT(statistics.id) DESC').take(limit)
   end
 
   def self.top_recent(limit = 10)
