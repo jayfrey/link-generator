@@ -14,6 +14,7 @@ import autodeskLogo from '../../assets/images/Frameautodesk.svg';
 import api from './util/linkhiveApi';
 import getSessId from './util/getSessId';
 import appendHostUrl from './util/appendHostUrl';
+import numberFormatter from './util/numberFormatter';
 
 const ShortenForm = ({ isUserLoggedIn, fetchUserLinks, fetchMostLinks }) => {
   const [url, setUrl] = useState('');
@@ -59,19 +60,20 @@ const ShortenForm = ({ isUserLoggedIn, fetchUserLinks, fetchMostLinks }) => {
   };
 
   const onToggleChange = (event) => {
-    // setCustomUrl(event.target.checked);
     setIsCreateCustomUrl(event.target.checked);
   };
 
   return (
     <>
-      <div className="toggle-form-group">
-        <span>Create custom URL?</span>
-        <label className="switch" htmlFor="toggle">
-          <input type="checkbox" id="toggle" onChange={onToggleChange} value={isCreateCustomUrl} />
-          <span className="slider round" />
-        </label>
-      </div>
+      { isUserLoggedIn ? (
+        <div className="toggle-form-group">
+          <span>Create custom URL?</span>
+          <label className="switch" htmlFor="toggle">
+            <input type="checkbox" id="toggle" onChange={onToggleChange} value={isCreateCustomUrl} />
+            <span className="slider round" />
+          </label>
+        </div>
+      ) : <></>}
 
       <form className="url-holder " onSubmit={urlFormSubmitHandler}>
         <div className="flex-row-container">
@@ -91,7 +93,7 @@ const ShortenForm = ({ isUserLoggedIn, fetchUserLinks, fetchMostLinks }) => {
         {
           isUserLoggedIn && isCreateCustomUrl
             ? (
-              <div className={`flex-row-container ${isCreateCustomUrl ? 'fadeIn' : 'fadeOut'}`}>
+              <div className="flex-row-container">
                 <input
                   type="text"
                   id="custom-url"
@@ -195,8 +197,7 @@ const PublicContent = ({ mostRecent, mostVisited }) => (
 );
 
 const PrivateContent = ({ links, fetchUserLinks }) => {
-  const removeLink = (event, linkId) => {
-    event.preventDefault();
+  const removeLink = (linkId) => {
     api.unbindLink(linkId).finally(() => {
       fetchUserLinks();
     });
@@ -234,7 +235,7 @@ const TableRow = ({ link, removeLink }) => (
       <td>{appendHostUrl(link.shortened_link)}</td>
       <td>{link.url}</td>
       <td>{Moment(link.created_at).format('MMM DD, yyyy')}</td>
-      <td className="text-center">{link.visit_count}</td>
+      <td className="text-center">{numberFormatter(link.visit_count)}</td>
       <td>
         <a href={link.analytics_link} target="_blank" className="action-btn">
           <ChartBar size={18} />

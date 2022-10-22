@@ -22,7 +22,7 @@ const linkmanApi = {
     return axios.get(routes.showUrl(slug));
   },
 
-  shortenLink(url, customUrl = '', userId = null) {
+  shortenLink(url, customUrl = null, userId = null) {
     return axios.post(routes.createUrl(), qs.stringify(url), customUrl, userId);
   },
 
