@@ -4,7 +4,8 @@ class UrlVisitIntervalChannel < ApplicationCable::Channel
   end
 
   def receive(data)
-    count = Statistic.where(created_at: (data['graph_interval']/1000).second.ago..DateTime.now).count()
-    ActionCable.server.broadcast("#{params[:room]}", {count: count})
+    now = DateTime.now
+    count = Url.joins(:statistics).where(slug: data['slug'], statistics: { created_at: (data['graph_interval']/1000).second.ago..now }).count()
+    ActionCable.server.broadcast("#{params[:room]}", {count: count, now: now.strftime("%M:%S")})
   end
 end
