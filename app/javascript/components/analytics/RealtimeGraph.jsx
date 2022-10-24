@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { createConsumer } from '@rails/actioncable';
 import { Chart as ChartJS, registerables } from 'chart.js';
-import { Line } from 'react-chartjs-2';
+import { Bar } from 'react-chartjs-2';
 
 ChartJS.register(...registerables);
 const consumer = createConsumer();
@@ -29,15 +29,15 @@ const RealtimeGraph = ({ slug }) => {
     },
     scales: {
       y: {
-        title: {
-          display: true,
-          text: 'Number of visits',
-        },
         beginAtZero: true,
         min: 0,
         suggestedMax: 10,
         ticks: {
           precision: 0,
+        },
+        title: {
+          display: true,
+          text: 'Number of visits',
         },
       },
       x: {
@@ -114,7 +114,7 @@ const RealtimeGraph = ({ slug }) => {
 
   return (
     <>
-      <Line
+      <Bar
         ref={chartRef}
         options={options}
         datasetIdKey="id"
