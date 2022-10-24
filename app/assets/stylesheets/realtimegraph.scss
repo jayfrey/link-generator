@@ -1,0 +1,39 @@
+.realtime-graph-container {
+
+    .white-background {
+        background-color: #FFF;
+    }
+
+    .padded-container {
+        padding: 50px 50px;
+        margin-bottom: 20px;
+    }
+
+    .interval-btn-group-form {
+        display: flex;
+        flex-flow: row nowrap;
+        width: 100%;
+        line-height: 40px;
+        justify-content: space-between;
+        padding: 20px 40px;
+    }
+
+    button {
+        background-color: #fff;
+        color: #0760C4;
+        border: 1px solid #0760C4;
+        padding: 10px 38px;
+    }
+
+    .btn-selected {
+        background-color: #0760C4;
+        color: #fff;
+        border: none;
+    }
+
+    .btn:hover {
+        background-color: #0760C4;
+        color: white;
+        border: none;
+    }
+}

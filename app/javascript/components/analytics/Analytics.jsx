@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import * as timeago from 'timeago.js';
 import { createConsumer } from '@rails/actioncable';
 import api from '../util/linkhiveApi';
+import RealtimeGraph from './RealtimeGraph';
 
 const consumer = createConsumer();
 
@@ -10,11 +11,9 @@ const Analytics = () => {
   const [urlData, setUrlData] = useState({});
   const [urlStats, setUrlStats] = useState([]);
   const [urlVisitCount, setUrlVisitCount] = useState(0);
-  const [graphInterval, setGraphInterval] = useState(5000);
+  const slug = (window.location.pathname).substring(3);
 
   useEffect(() => {
-    const slug = (window.location.pathname).substring(3);
-
     api.getUrlData(slug)
       .then((r) => {
         setUrlData(r.data.data.url);
@@ -29,17 +28,6 @@ const Analytics = () => {
         setUrlVisitCount(stats.count);
       },
     });
-
-    const urlVisitIntervalChannel = consumer.subscriptions.create({ channel: 'UrlVisitIntervalChannel', room: `url_visit_interval:${slug}` }, {
-      received(data) {
-        console.log(data.count);
-      },
-    });
-    const interval = setInterval(() => {
-      urlVisitIntervalChannel.send({ slug, graph_interval: graphInterval });
-    }, graphInterval);
-
-    return () => clearInterval(interval);
   }, []);
 
   return (
@@ -65,6 +53,10 @@ const Analytics = () => {
           Clicks
         </div>
       </div>
+      <div className="realtime-graph-container white-background padded-container">
+        <RealtimeGraph slug={slug} />
+      </div>
+
       <div className="analytics-statistics-section white-background padded-container">
         <table className="table table-hover analytics-table">
           <thead>
